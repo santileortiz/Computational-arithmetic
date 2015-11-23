@@ -1,17 +1,18 @@
-all: test_modular_arithmetic
+all: test_elliptic_curves
 
 build:
 	mkdir build
 
-integer_arithmetic:
-	gcc -o build/integer_arithmetic_test tests_integer_arithmetic.c integer_arithmetic.c
+test_elliptic_curves: build
+	gcc -o build/test_elliptic_curves test_elliptic_curves.c integer_arithmetic.c modular_arithmetic.c
+	build/test_elliptic_curves > build/out.magma
+	cat build/out.magma | magma
 
-test_integer_arithmetic:  build integer_arithmetic
-	./build/arithmetic_test
+magma:
+	magma build/out.magma
 
-modular_arithmetic:
-	gcc -o build/modular_arithmetic_test tests_modular_arithmetic.c integer_arithmetic.c modular_arithmetic.c
-
-test_modular_arithmetic: build modular_arithmetic
-	./build/modular_arithmetic_test
+main: build
+	gcc -o build/main main.c integer_arithmetic.c modular_arithmetic.c
+	build/main > build/out.magma
+	cat build/out.magma | magma
 
