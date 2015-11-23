@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "modular_arithmetic.h"
 
-void long_mod_restoring_reduction (uint64_t * a, uint64_t * p, uint64_t * ans) {
+void mod_restoring_reduction (uint64_t * a_l, uint64_t * p, uint64_t * ans) {
     int k = NWORDS*64;
     uint64_t loc_p [2*NWORDS];
     uint64_t temp1 [2*NWORDS];
@@ -12,8 +12,8 @@ void long_mod_restoring_reduction (uint64_t * a, uint64_t * p, uint64_t * ans) {
     zero (loc_p, 2*NWORDS);
     copy_num (p, loc_p, NWORDS);
 
-    if ( !(lt (a, loc_p, 2*NWORDS) ) ) {
-        copy_num (a, temp2, 2*NWORDS);
+    if ( !(lt (a_l, loc_p, 2*NWORDS) ) ) {
+        copy_num (a_l, temp2, 2*NWORDS);
         zero (loc_p, 2*NWORDS);
         copy_num (p, loc_p+NWORDS, NWORDS);
 
@@ -33,31 +33,31 @@ void long_mod_restoring_reduction (uint64_t * a, uint64_t * p, uint64_t * ans) {
     }
 }
 
-void mod_restoring_reduction (uint64_t * a, uint64_t * p, uint64_t * ans) {
+void mod_restoring_reduction_len (uint64_t * a, uint64_t * p, uint64_t * ans, int size) {
     int k = 0;
-    uint64_t loc_p [NWORDS];
-    uint64_t temp [NWORDS];
+    uint64_t loc_p [size];
+    uint64_t temp [size];
     
-    copy_num (p, loc_p, NWORDS);
-    copy_num (a, ans, NWORDS);
+    copy_num (p, loc_p, size);
+    copy_num (a, ans, size);
 
-    if ( !(lt (a, p, NWORDS) ) ) {
-        while ( !( (1LL<<62) & loc_p [NWORDS-1] ) ) {
-            lshift_by_one (loc_p, temp, NWORDS);
-            swap (loc_p, temp, NWORDS);
+    if ( !(lt (a, p, size) ) ) {
+        while ( !( (1LL<<62) & loc_p [size-1] ) ) {
+            lshift_by_one (loc_p, temp, size);
+            swap (loc_p, temp, size);
             k++;
         }
 
         for (; k>=0; k--) {
-            int_subtract (ans, loc_p, temp, NWORDS);
+            int_subtract (ans, loc_p, temp, size);
             if (!(is_negative (temp)))
-                swap (ans, temp, NWORDS);
+                swap (ans, temp, size);
             //else
             //  ans ya tiene la iteracion anterior entonces
             //  no hacer swap es lo mismo que la restauracion
             
-            rshift_by_one (loc_p, temp, NWORDS);
-            swap (loc_p, temp, NWORDS);
+            rshift_by_one (loc_p, temp, size);
+            swap (loc_p, temp, size);
         }
     }
 }
@@ -65,7 +65,7 @@ void mod_restoring_reduction (uint64_t * a, uint64_t * p, uint64_t * ans) {
 void mod_rand (uint64_t * a, uint64_t * p) {
     uint64_t num [NWORDS];
     int_positive_rand (num, NWORDS);
-    mod_restoring_reduction (num, p, a);
+    mod_restoring_reduction_len (num, p, a, NWORDS);
 }
 
 void mod_add (uint64_t * a, uint64_t * b, uint64_t * p, uint64_t * ans) {
@@ -110,7 +110,7 @@ void mont_setup ( uint64_t * N, uint64_t * Nprime, uint64_t * R, uint64_t * Rinv
 void to_mont_domain (uint64_t * a, uint64_t * abar, uint64_t * N, uint64_t * R) {
     uint64_t long_temp [2*NWORDS];
     int_multiply (R, a, long_temp);
-    long_mod_restoring_reduction (long_temp, N, abar);
+    mod_restoring_reduction (long_temp, N, abar);
 }
 
 void mont_redc (uint64_t * a, uint64_t * N, uint64_t * Nprime, uint64_t * aRedc) {

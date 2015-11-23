@@ -1,6 +1,8 @@
 #include "integer_arithmetic.h"
 
 void mod_restoring_reduction (uint64_t * a, uint64_t * p, uint64_t * ans);
+void mod_restoring_reduction_len (uint64_t * a, uint64_t * p, uint64_t * ans, int size);
+void mod_restoring_reduction (uint64_t * a, uint64_t * p, uint64_t * ans);
 void mod_rand (uint64_t * a, uint64_t * p);
 void mod_add (uint64_t * a, uint64_t * b, uint64_t * p, uint64_t * ans);
 void mod_subtract (uint64_t * a, uint64_t * b, uint64_t * p, uint64_t * ans);
