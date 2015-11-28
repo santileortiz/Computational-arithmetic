@@ -1,2 +1,2 @@
-#include "elliptic_curve_arithmetic.c"
+#include "elliptic_curve_arithmetic.h"
 
