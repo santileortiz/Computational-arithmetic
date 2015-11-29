@@ -43,12 +43,12 @@ void int_positive_rand (uint64_t * num, int size) {
 void int_from_string (char *str, uint64_t *num, int size) {
     uint64_t temp_int [size];
     int chars_left = 0, i=0, current_word=0;
-    char c, buff [17], is_negative = 0;
+    char c, buff [17], str_is_negative = 0;
     if (str == NULL) {
         zero (num, size);
     } else {
         if (str[0] == '-') {
-            is_negative = 1;
+            str_is_negative = 1;
             str++;
         }
 
@@ -82,8 +82,8 @@ void int_from_string (char *str, uint64_t *num, int size) {
             }
 
             while (chars_left >= 0) {
-                buff [i+chars_left] = str [chars_left];
                 chars_left--;
+                buff [i+chars_left] = str [chars_left];
             }
 
             sscanf (buff, "%"SCNx64, &num[current_word]);
@@ -102,7 +102,7 @@ void int_from_string (char *str, uint64_t *num, int size) {
             // TODO: Implementar conversion de strings decimales
         }
 
-        if (is_negative){
+        if (str_is_negative){
             twos_complement (num, temp_int, size);
             swap (num, temp_int, size);
         }
