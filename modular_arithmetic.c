@@ -19,7 +19,7 @@ void mod_restoring_reduction (uint64_t * a_l, uint64_t * p, uint64_t * ans) {
 
         for (; k>=0; k--) {
             int_subtract (temp2, loc_p, temp1, 2*NWORDS);
-            if (!(long_is_negative (temp1)))
+            if (!(is_negative (temp1, 2*NWORDS)))
                 swap (temp2, temp1, 2*NWORDS);
             //else
             //  temp2 ya tiene la iteracion anterior entonces
@@ -50,7 +50,7 @@ void mod_restoring_reduction_len (uint64_t * a, uint64_t * p, uint64_t * ans, in
 
         for (; k>=0; k--) {
             int_subtract (ans, loc_p, temp, size);
-            if (!(is_negative (temp)))
+            if (!(is_negative (temp, NWORDS)))
                 swap (ans, temp, size);
             //else
             //  ans ya tiene la iteracion anterior entonces
@@ -66,6 +66,18 @@ void mod_rand (uint64_t * a, uint64_t * p) {
     uint64_t num [NWORDS];
     int_positive_rand (num, NWORDS);
     mod_restoring_reduction_len (num, p, a, NWORDS);
+}
+
+// Asume que el string representa un valor entre -p y p-1
+void mod_from_string (char *str, uint64_t *p, uint64_t *num, int size) {
+    uint64_t temp [size];
+
+    int_from_string (str, num, size);
+
+    if (is_negative (num, size)) {
+        int_add (p, num, temp, size);
+        swap (num, temp, size);
+    }
 }
 
 void mod_add (uint64_t * a, uint64_t * b, uint64_t * p, uint64_t * ans) {
@@ -96,7 +108,7 @@ void mont_setup ( uint64_t * N, uint64_t * Nprime, uint64_t * R, uint64_t * Rinv
 
     extended_binary (R, N, d, Rinv, Nprime);
 
-    if (is_negative (Rinv)) {
+    if (is_negative (Rinv, NWORDS)) {
         int_add (Rinv, N, temp, NWORDS);
         swap (Rinv, temp, NWORDS);
         int_subtract (Nprime, R, temp, NWORDS);
@@ -211,12 +223,12 @@ void fast_reduction_p244 (uint64_t * a, uint64_t * res) {
         }
 
         int_subtract (temp, s4, res, NWORDS);
-        if ( is_negative (res) ) {
+        if ( is_negative (res, NWORDS) ) {
             int_add (res, p244, temp, NWORDS); swap (temp, res, NWORDS);
         }
 
         int_subtract ( res, s5, temp, NWORDS);
-        if ( is_negative (temp) ) {
+        if ( is_negative (temp, NWORDS) ) {
             int_add (temp, p244, res, NWORDS); swap (temp, res, NWORDS);
         }
         copy_num (temp, res, NWORDS);
@@ -408,17 +420,17 @@ void fast_reduction_p384 (uint64_t * a, uint64_t * res) {
         }
 
         int_subtract (res, s8, temp, NWORDS);
-        if ( is_negative (temp) ) {
+        if ( is_negative (temp, NWORDS) ) {
             int_add (temp, p384, res, NWORDS); swap (temp, res, NWORDS);
         }
 
         int_subtract (temp, s9, res, NWORDS);
-        if ( is_negative (res) ) {
+        if ( is_negative (res, NWORDS) ) {
             int_add (res, p384, temp, NWORDS); swap (res, temp, NWORDS);
         }
 
         int_subtract (res, s10, temp, NWORDS);
-        if ( is_negative (temp) ) {
+        if ( is_negative (temp, NWORDS) ) {
             int_add (temp, p384, res, NWORDS); swap (temp, res, NWORDS);
         }
         copy_num (temp, res, NWORDS);

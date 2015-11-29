@@ -1,8 +1,7 @@
 #define NWORDS 7
 #define WSIZE 64
 #define is_even(a) (!(a[0]&1))
-#define is_negative(a) (a[NWORDS-1]&(1LL<<63))
-#define long_is_negative(a) (a[2*NWORDS-1]&(1LL<<63))
+#define is_negative(a, size) (a[size-1]&(1LL<<63))
 #define get_bit(num,r) ((num[r/64]&(1LL<<(r%64))))
 
 // Para todas las funciones size es la cantidad de palabras para las que
@@ -13,6 +12,7 @@ void int_raw_print (uint64_t * num, int size);
 void int_rand (uint64_t * num, int size);
 void int_positive_rand (uint64_t * num, int size);
 
+void int_from_string (char *str, uint64_t *num, int size);
 void zero (uint64_t * num, int size);
 void one (uint64_t * num, int size);
 

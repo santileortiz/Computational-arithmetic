@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <stdint.h>
+#include <inttypes.h>
 #include <stdlib.h>
 #include "integer_arithmetic.h"
 
@@ -38,6 +38,75 @@ void int_positive_rand (uint64_t * num, int size) {
     int_rand (num, size);
     // pone el bit de signo en 0
     num [NWORDS-1] &= ~(1LL<<(WSIZE-1));
+}
+
+void int_from_string (char *str, uint64_t *num, int size) {
+    uint64_t temp_int [size];
+    int chars_left = 0, i=0, current_word=0;
+    char c, buff [17], is_negative = 0;
+    if (str == NULL) {
+        zero (num, size);
+    } else {
+        if (str[0] == '-') {
+            is_negative = 1;
+            str++;
+        }
+
+        if (str[0] == '0' && str[1] == 'x') {
+            // ------------
+            // Hexadecimal
+            // ------------
+            str += 2;
+
+            // Cuenta la cantidad de digitos hexadecimales
+            while (str[i] != '\0') {
+                i++;
+            }
+
+            // Convierte de derecha a izquierda todas las palabras que tienen
+            // exactamente 16 digitos
+            chars_left = i;
+            buff [16] = '\0';
+            while (chars_left > 16) {
+                chars_left -= 16;
+                for (i=15; i>=0; i--) {
+                    buff [i] = str [chars_left + i];
+                }
+                sscanf (buff, "%"SCNx64, &num[current_word]);
+                current_word ++;
+            }
+
+            // Lee la ultima palabra que puede tener menos de 16 digitos
+            for (i=0; i<16-chars_left; i++) {
+                buff [i] = ' ';
+            }
+
+            while (chars_left >= 0) {
+                buff [i+chars_left] = str [chars_left];
+                chars_left--;
+            }
+
+            sscanf (buff, "%"SCNx64, &num[current_word]);
+            current_word ++;
+
+            // Llena las demas palabras con 0's
+            while (current_word<size) {
+                num [current_word] = 0;
+                current_word++;
+            }
+        }
+        else {
+            // -------
+            // Decimal
+            // -------
+            // TODO: Implementar conversion de strings decimales
+        }
+
+        if (is_negative){
+            twos_complement (num, temp_int, size);
+            swap (num, temp_int, size);
+        }
+    }
 }
 
 void zero (uint64_t * num, int size) {
@@ -262,7 +331,7 @@ int is_one (uint64_t *num) {
 int lt (uint64_t *a, uint64_t *b, int size) {
     int i=0;
     if ((a[size-1]&(1LL<<63))^(b[size-1]&(1LL<<63))){
-        if ((is_negative(a)) && (!(is_negative(b)))){
+        if ((is_negative(a, NWORDS)) && (!(is_negative(b, NWORDS)))){
             return 1;
         } else {
             return 0;
@@ -279,7 +348,7 @@ int lt (uint64_t *a, uint64_t *b, int size) {
 int leq (uint64_t *a, uint64_t *b) {
     int i=0;
     if ((a[NWORDS-1]&(1LL<<63))^(b[NWORDS-1]&(1LL<<63))){
-        if ((is_negative(a)) && (!(is_negative(b)))){
+        if ((is_negative(a, NWORDS)) && (!(is_negative(b, NWORDS)))){
             return 1;
         } else {
             return 0;
