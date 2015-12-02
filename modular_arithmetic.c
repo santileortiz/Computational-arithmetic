@@ -89,6 +89,24 @@ void mod_add (uint64_t * a, uint64_t * b, uint64_t * p, uint64_t * ans) {
     }
 }
 
+void mod_multiply (uint64_t *a, uint64_t *b, uint64_t *p, uint64_t *ans) {
+    uint64_t temp[2*NWORDS]; zero (temp, 2*NWORDS);
+    int_multiply (a, b, temp);
+    mod_restoring_reduction (temp, p, ans);
+}
+
+void mod_inverse (uint64_t *a, uint64_t *p, uint64_t *ans) {
+    new_int(b)
+    new_int(t)
+    new_int(d)
+
+    extended_binary (a, p, d, ans, t);
+    if (is_negative(ans, NWORDS)) {
+        int_add (ans, p, t, NWORDS);
+        swap (t, ans, NWORDS);
+    }
+}
+
 void mod_subtract (uint64_t * a, uint64_t * b, uint64_t * p, uint64_t * ans) {
     uint64_t temp [NWORDS];
     if ( lt (b, a, NWORDS) ) {
