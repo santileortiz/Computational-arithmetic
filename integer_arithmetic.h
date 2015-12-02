@@ -4,6 +4,8 @@
 #define is_negative(a, size) (a[size-1]&(1LL<<63))
 #define get_bit(num,r) ((num[r/64]&(1LL<<(r%64))))
 
+#define new_int(n) uint64_t n[NWORDS]; zero (n, NWORDS);
+
 // Para todas las funciones size es la cantidad de palabras para las que
 // debe correr.
 void int_print (uint64_t * num, int size);
