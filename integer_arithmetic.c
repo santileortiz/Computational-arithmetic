@@ -81,7 +81,7 @@ void int_from_string (char *str, uint64_t *num, int size) {
                 buff [i] = ' ';
             }
 
-            while (chars_left >= 0) {
+            while (chars_left > 0) {
                 chars_left--;
                 buff [i+chars_left] = str [chars_left];
             }
