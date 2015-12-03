@@ -93,5 +93,6 @@ int main (void) {
     //print_magma_point_definition("kG",
     //        "resultado de elliptic_scalar_multiplication(k,G)", Q);
     //print_magma_test ("E!kG eq k*E!G");
+    return 0;
 }
 
