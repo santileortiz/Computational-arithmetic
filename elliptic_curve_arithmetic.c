@@ -2,11 +2,7 @@
 #include <inttypes.h>
 #include <stdlib.h>
 #include "elliptic_curve_arithmetic.h"
-
-void print_magma_int_definition_l (char * var_name, char * desc, uint64_t * num) {
-    printf ("print \"%s <-- %s \";\n", var_name, desc);
-    printf ("%s := ", var_name); int_raw_print (num, NWORDS); printf (";\n");
-}
+#include "debugging_functions.h"
 
 void elliptic_point_init (E_Fp_point *P, uint64_t *r) {
 }

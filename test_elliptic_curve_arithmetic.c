@@ -3,37 +3,13 @@
 #include <stdio.h>
 #include "modular_arithmetic.h"
 #include "elliptic_curve_arithmetic.h"
+#include "debugging_functions.h"
 
 #define new_point(P) \
             E_Fp_point P; \
             new_int (P ## x) \
             new_int (P ## y) \
             elliptic_point_init_x_y (& P, P ## x, P ## y);
-            
-
-void print_magma_comment (char *str) {
-    printf ("print \"%s\";\n", str);
-}
-
-void print_magma_test (char * test_str) {
-    printf ("printf \"%s --> \"; ", test_str);
-    printf ("%s;\n", test_str);
-}
-
-void print_magma_int_definition (char * var_name, char * desc, uint64_t * num) {
-    printf ("print \"%s <-- %s \";\n", var_name, desc);
-    printf ("%s := ", var_name); int_raw_print (num, NWORDS); printf (";\n");
-}
-
-void print_magma_point_definition (char *var_name, char *desc, E_Fp_point P) {
-    printf ("print \"%s <-- %s \";\n", var_name, desc);
-    if (P.is_identity) {
-        printf ("%s := 0;\n", var_name);
-    } else {
-        printf ("%s := [", var_name); int_raw_print (P.X, NWORDS); printf (",");
-        int_raw_print (P.Y, NWORDS); printf ("];\n");
-    }
-}
 
 int main (void) {
     new_int (p256)
