@@ -1,11 +1,11 @@
-all: test_elliptic_curves
+all: test_elliptic_curve_arithmetic
 
 build:
 	mkdir build
 
-test_elliptic_curves: build
-	gcc -o build/test_elliptic_curves test_elliptic_curves.c integer_arithmetic.c modular_arithmetic.c elliptic_curve_arithmetic.c
-	build/test_elliptic_curves > build/out.magma
+test_elliptic_curve_arithmetic: build
+	gcc -o build/test_elliptic_curve_arithmetic test_elliptic_curve_arithmetic.c integer_arithmetic.c modular_arithmetic.c elliptic_curve_arithmetic.c
+	build/test_elliptic_curve_arithmetic > build/out.magma
 	cat build/out.magma | magma
 
 magma:
