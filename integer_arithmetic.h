@@ -21,6 +21,7 @@ void one (uint64_t * num, int size);
 void int_add (uint64_t *a, uint64_t *b, uint64_t *res, int size);
 int uint_add (uint64_t *a, uint64_t *b, uint64_t *res);
 
+int count_non_zero_bits (uint64_t *a, int size);
 void twos_complement (uint64_t *a, uint64_t *res, int size);
 void int_subtract (uint64_t *a, uint64_t *b, uint64_t *res, int size);
 

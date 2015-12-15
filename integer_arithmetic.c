@@ -14,11 +14,11 @@ void int_raw_print (uint64_t * num, int size) {
 
 void int_print (uint64_t * num, int size) {
     int i=0;
-    uint64_t tmp [NWORDS];
+    uint64_t tmp [size];
 
     if (num[size-1]&(1LL<<(WSIZE-1))){
         printf("-");
-        twos_complement(num, tmp, NWORDS);
+        twos_complement(num, tmp, size);
         int_raw_print (tmp, size);
         return;
     }
@@ -118,7 +118,7 @@ void zero (uint64_t * num, int size) {
 
 void one (uint64_t * num, int size) {
     int i=0;
-    for (i=0; i<NWORDS; i++) {
+    for (i=0; i<size; i++) {
         num[i] = 0;
     }
 
@@ -192,6 +192,20 @@ void int_add (uint64_t *a, uint64_t *b, uint64_t *res, int size) {
                     "palabras por favor\n");
         }
     }
+}
+
+int count_non_zero_bits (uint64_t *a, int size) {
+    int res = size*WSIZE, i;
+    uint64_t temp;
+    for  (i=size-1; !a[i]; i--) {
+        res -= WSIZE;
+    }
+    temp = a[i]>>1;
+    for (i=1; temp; i++){
+        temp = temp>>1;
+    }
+    res -= WSIZE-i;
+    return res;
 }
 
 void int_subtract (uint64_t *a, uint64_t *b, uint64_t *res, int size) {
@@ -283,7 +297,7 @@ void lshift_by_one (uint64_t *a, uint64_t *res, int size) {
     if ( (a[size-1]&(1LL<<63)) || (a[size-1]&(1LL<<62)))
         printf ("Error: este shift se desborda \n");
 
-    for (i=size-1; i>=0; i--){
+    for (i=size-1; i>0; i--){
         res[i] = a[i]<<1;
         res[i] |= (a[i-1]&(1LL<<63))>>63;
     }
