@@ -97,9 +97,7 @@ void mod_add (uint64_t * a, uint64_t * b, uint64_t * p, uint64_t * ans) {
 void mod_multiply (uint64_t *a, uint64_t *b, uint64_t *p, uint64_t *ans) {
     uint64_t temp[2*NWORDS]; zero (temp, 2*NWORDS);
     int_multiply (a, b, temp);
-    print_magma_int_definition ("mod_mult", "esto no deberia ser cero", temp);
     mod_restoring_reduction (temp, p, ans);
-    print_magma_int_definition ("mmm", "esto no deberia ser cero", ans);
 }
 
 void mod_inverse (uint64_t *a, uint64_t *p, uint64_t *ans) {
