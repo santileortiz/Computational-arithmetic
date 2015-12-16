@@ -19,6 +19,12 @@
 #define curve_Gy "0x4FE342E2FE1A7F9B8EE7EB4A7C0F9E1" \
                  "62BCE33576B315ECECBB6406837BF51F5"
 
+#define new_point(P) \
+            E_Fp_point P; \
+            new_int (P ## x) \
+            new_int (P ## y) \
+            elliptic_point_init_x_y (& P, P ## x, P ## y);
+
 typedef struct _E_Fp_point {
     char is_identity;
     uint64_t *X;

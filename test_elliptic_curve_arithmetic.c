@@ -1,15 +1,10 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <time.h>
 #include "modular_arithmetic.h"
 #include "elliptic_curve_arithmetic.h"
 #include "debugging_functions.h"
-
-#define new_point(P) \
-            E_Fp_point P; \
-            new_int (P ## x) \
-            new_int (P ## y) \
-            elliptic_point_init_x_y (& P, P ## x, P ## y);
 
 int main (void) {
     new_int (p256)
@@ -22,6 +17,8 @@ int main (void) {
     new_point (R)
 
     int_from_string (curve_p, p256, NWORDS);
+
+    srand(time(NULL));
 
     print_magma_comment
     ("\n--------------------------------\n"
@@ -86,13 +83,31 @@ int main (void) {
             "elliptic_point_add (Inf, Inf)", Q);
     print_magma_test ("E!InfInf eq E!0");
 
-    //print_magma_comment ("\n// Probando producto escalar");
-    //mod_rand (k, n);
-    //print_magma_int_definition ("k", "Numero al azar entre 0..n-1", k);
-    //elliptic_scalar_multiplication (k, G, Q);
-    //print_magma_point_definition("kG",
-    //        "resultado de elliptic_scalar_multiplication(k,G)", Q);
-    //print_magma_test ("E!kG eq k*E!G");
+    print_magma_comment ("\n// Probando producto escalar");
+    mod_rand (k, n);
+    //int_from_string("0x1C455B432D7B3D5930347C6BC833DD8BFAEA1FA4EDC0DE49A848E03BDC6BBCF6", k, NWORDS);
+    print_magma_int_definition ("k", "Numero al azar entre 0..n-1", k);
+    elliptic_scalar_multiplication (k, G, &Q);
+    print_magma_point_definition("kG",
+           "resultado de elliptic_scalar_multiplication(k,G)", Q);
+    //print_magma_test("\n(k*E!G); E!kG;");
+    print_magma_test ("E!kG eq k*E!G");
+
+/*
+    new_point(T);
+    new_point(D);
+    new_int(x);
+    new_int(y);
+
+    int_from_string("0xD6D33ADEFA195B07A7C36DA090853B8CFD8CD1C688B58A41DEDD693D1C784DEF", x, NWORDS);
+    int_from_string("0x84AABA16EE195D7E3F78245F558A5DCB09A166AB4B95EDED550C124593D1BCA6", y, NWORDS);
+
+    elliptic_point_init_x_y(&T, x, y);
+    print_magma_point_definition("T", "", T);
+    elliptic_point_double(T, &D);
+
+    print_magma_point_definition("T_dob", "", D);
+*/
     return 0;
 }
 
