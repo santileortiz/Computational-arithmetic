@@ -2,8 +2,6 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include "modular_arithmetic.h"
-#include "elliptic_curve_arithmetic.h"
-#include "debugging_functions.h"
 
 void mod_restoring_reduction (uint64_t * a_l, uint64_t * p, uint64_t * ans) {
     int k = NWORDS*64;
@@ -106,7 +104,16 @@ void mod_inverse (uint64_t *a, uint64_t *p, uint64_t *ans) {
     new_int(d)
 
     extended_binary (a, p, d, ans, t);
-    if (is_negative(ans, NWORDS)) {
+    // NOTA: En algunos casos aun cuando a<p, sucede que ans < -2*p entonces
+    // hay que sumar p 2 veces, crei que siempre era necesaria maximo una suma.
+    // Por que a veces son 2?.
+    //
+    // Un caso para el que esto sucede es:
+    // p = P-256
+    // a = 0xCE8F805D101B422FC276985245BB5B1CC73112525E\
+    //      47E9DCFDCC6D9D1515E18
+
+    while (is_negative(ans, NWORDS)) {
         int_add (ans, p, t, NWORDS);
         swap (t, ans, NWORDS);
     }
