@@ -92,18 +92,21 @@ int main (void) {
            "resultado de elliptic_scalar_multiplication(k,G)", Q);
     //print_magma_test("\n(k*E!G); E!kG;");
     print_magma_test ("E!kG eq k*E!G");
-
 /*
+
     new_point(T);
     new_point(D);
     new_int(x);
     new_int(y);
 
-    int_from_string("0xD6D33ADEFA195B07A7C36DA090853B8CFD8CD1C688B58A41DEDD693D1C784DEF", x, NWORDS);
-    int_from_string("0x84AABA16EE195D7E3F78245F558A5DCB09A166AB4B95EDED550C124593D1BCA6", y, NWORDS);
+    int_from_string("0x629C2FD005BC81F63E49CBFA94CCEFEECD409B340F034988A481581A1DFE63A7", x, NWORDS);
+    int_from_string("0x6747C02E880DA117E13B4C2922DDAD8E639889292F23F4EE7EE636CE8A8AF0C", y, NWORDS);
 
     elliptic_point_init_x_y(&T, x, y);
     print_magma_point_definition("T", "", T);
+    printf("x := T[1];\n");
+    printf("y := T[2];\n");
+
     elliptic_point_double(T, &D);
 
     print_magma_point_definition("T_dob", "", D);

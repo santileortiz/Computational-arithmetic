@@ -136,6 +136,7 @@ void elliptic_point_double (E_Fp_point P, E_Fp_point *R) {
         //int_from_string ("0x2", t1, NWORDS);
         //mod_multiply (t1, P.Y, p, t3);
         mod_add (P.Y, P.Y, p, t3);
+        //print_magma_int_definition("yy", "", t3);
         mod_inverse (t3, p, t5);
         //print_magma_int_definition("t5", "t5 <-- (2*P.Y)^-1", t5);
 
@@ -183,21 +184,27 @@ void elliptic_scalar_multiplication (uint64_t *k, E_Fp_point P, E_Fp_point *R){
     R->is_identity = 1;
     zero(R->X, NWORDS);
     zero(R->Y, NWORDS);
+    //print_magma_point_definition("t", "", Q);
 
     int t = count_non_zero_bits(k, NWORDS);
     //printf("Los bits de k son %d, NWORDS: %d\n", t, NWORDS);
-    //getchar();
     for(i = t-1; i >= 0; i--){
         //print_magma_point_definition("Qdob_in", "", *R);
         elliptic_point_double(*R, &Q);
         elliptic_point_copy(Q, R);
         //print_magma_point_definition("Qdob", "", *R);
+        //printf("t := 2*E!t;\n");
+        //printf("E!t eq E!Qdob;\n");
+        //printf("E!t; Qdob;\n");
 
         if(get_bit(k, i)){
             //printf("%llu\n", get_bit(k, i));
             elliptic_point_add(*R, P, &Q);
             elliptic_point_copy(Q, R);
             //print_magma_point_definition("Qsum", "", *R);
+            //printf("t := E!t + E!G;\n");
+            //printf("E!t eq E!Qsum;\n");
+            //printf("E!t; Qsum;\n");
         }
         //print_magma_point_definition("Q", "", *R);
     }

@@ -42,3 +42,5 @@ void elliptic_point_inverse (E_Fp_point P, E_Fp_point *R);
 void elliptic_point_double (E_Fp_point P, E_Fp_point *R);
 void elliptic_scalar_multiplication (uint64_t *k, E_Fp_point P, E_Fp_point *R);
 
+
+void elliptic_point_copy (E_Fp_point P, E_Fp_point *Q);
