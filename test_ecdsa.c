@@ -44,9 +44,9 @@ int main(int argc, char const *argv[])
     new_int(r);
     new_int(s);
 
-    ecdsa_signature_generation(G, n, d, "ecdsa.c", r, s);
+    ecdsa_signature_generation(G, n, d, "Makefile", r, s);
 
-    if(ecdsa_signature_verification(G, Q, r, s, n, "ecdsa.c"))
+    if(ecdsa_signature_verification(G, Q, r, s, n, "Makefile"))
     	printf("printf \"Verificacion exitosa\n\";");
     else
     	printf("printf \"Verificacion fallida\n\";");

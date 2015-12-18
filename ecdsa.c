@@ -2,7 +2,6 @@
 
 char *get_hash(char *file_name){
 
-	//new_int(hash_int);
 	char sha[50];
 	strcpy(sha, "sha256sum ");
 	strcat(sha, file_name);
@@ -22,7 +21,6 @@ char *get_hash(char *file_name){
 	fscanf(hash, "%s", &hash_string);
 	system("rm hash");
 	strcat(tmp, hash_string);
-	//printf("printf \"%s\"\n;", tmp);
 
 	return tmp;
 }
@@ -34,6 +32,7 @@ void key_generation(E_Fp_point P, uint64_t *n, E_Fp_point *Q, uint64_t *d){
 	// Select d ∈ R [1, n − 1].
 	mod_rand(dtmp, n);
 
+	// Compute Q = d P.
 	elliptic_scalar_multiplication(dtmp, P, &Qtmp);
 
 	copy_num(dtmp, d, NWORDS);
@@ -52,43 +51,34 @@ void ecdsa_signature_generation(E_Fp_point P, uint64_t *n, uint64_t *d, char *fi
 	new_int(edr);
 	new_int(k_inv);
 
+	// Select k ∈ R [1, n − 1].
 	mod_rand(k, n);
 
+	// Compute k P = (x 1 , y 1 ) and convert x 1 to an integer x 1 .
 	new_point(kP);
 	elliptic_scalar_multiplication(k, P, &kP);
-	//print_magma_point_definition("kP", "kP", kP);
 
+	// Compute r = x 1 mod n.
 	mod_restoring_reduction_len(kP.X, n, rr, NWORDS);
 
+	// Compute e = H (m).
 	hash = get_hash(file);
     int_from_string(hash, e, NWORDS);
-    //print_magma_int_definition("e", "el hash en hexa", e);
 
+    // Compute s = k −1 (e + dr ) mod n
     mod_multiply(d, rr, n, dr);
     mod_add(e, dr, n, edr);
     mod_inverse(k, n, k_inv);
     mod_multiply(k_inv, edr, n, ss);
-/*
-    print_magma_int_definition("d", "definicio de d", d);
-    print_magma_int_definition("r", "definicio de r", rr);
-    print_magma_int_definition("k", "definicio de k", k);
-    print_magma_int_definition("dr", "definicio de dr", dr);
-    print_magma_int_definition("edr", "definicio de edr", edr);
-    print_magma_int_definition("k_inv", "definicio de k_inv", k_inv);
-    print_magma_int_definition("s", "definicio de s", ss);
-    print_magma_int_definition("nn", "definicion de nn", n);
 
-    printf("Fn := GF(nn);\n");
-    printf("k := Fn!k;");
-    printf("d*r mod nn eq dr;\n");
-    printf("(e + d*r) mod nn eq edr;\n");
-    printf("Fn!((k^-1) * (e + d*r))eq s;\n");
-*/
     copy_num(ss, s, NWORDS);
     copy_num(rr, r, NWORDS);
 }
 
 int ecdsa_signature_verification(E_Fp_point P, E_Fp_point Q, uint64_t *r, uint64_t *s, uint64_t *n, char *file){
+
+	// Verify that r and s are integers in the interval [1, n − 1]. If any verification fails
+	// then return(“Reject the signature”).
 	if(lt(n, r, NWORDS) || lt(n, s, NWORDS))
 		return 0;
 
@@ -104,25 +94,32 @@ int ecdsa_signature_verification(E_Fp_point P, E_Fp_point Q, uint64_t *r, uint64
 
 	char *hash;
 
+	// Compute e = H (m).
 	hash = get_hash(file);
     int_from_string(hash, e, NWORDS);
-    //print_magma_int_definition("e", "el hash en hexa", e);
 
+    // Compute w = s −1 mod n.
     mod_inverse(s, n, w);
 
+    // Compute u 1 = ew mod n and u 2 = r w mod n.
     mod_multiply(e, w, n, u1);
     mod_multiply(r, w, n, u2);
 
+    // Compute X = u 1 P + u 2 Q.
     elliptic_scalar_multiplication(u1, P, &u1P);
     elliptic_scalar_multiplication(u2, Q, &u2Q);
 
     elliptic_point_add(u1P, u2Q, &X);
 
+    // If X = ∞ then return(“Reject the signature”);
     if(X.is_identity)
     	return 0;
 
+    // compute v = x 1 mod n.
     mod_restoring_reduction_len(X.X, n, v, NWORDS);
 
+    // If v = r then return(“Accept the signature”);
+	// Else return(“Reject the signature”).
     if(!neq(v, r))
 		return 1;
 
