@@ -18,7 +18,7 @@ char *get_hash(char *file_name){
 	char hash_string[70];
 	char *tmp = malloc(sizeof(char) * 70);
 	strcpy(tmp, "0x");
-	fscanf(hash, "%s", &hash_string);
+	fscanf(hash, "%s", hash_string);
 	system("rm hash");
 	strcat(tmp, hash_string);
 
